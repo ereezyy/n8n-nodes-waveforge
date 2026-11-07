@@ -1,0 +1,221 @@
+
+openapi: 3.0.3
+info:
+  title: WaveForge API
+  version: "1.0.0"
+  description: |
+    Create music-video renders, poll status, and receive signed webhooks.
+    Authenticate with Authorization: Bearer wf_live_… or wf_test_….
+    Test keys do not charge credits and do not encode.
+    Limits are per user. See https://waveforge.net/developers.
+servers:
+  - url: https://waveforge.net
+paths:
+  /api/v1/presets:
+    get:
+      summary: List visualizer presets
+      security: [{ bearer: [] }]
+      responses:
+        "200":
+          description: Preset list
+        "401":
+          description: Missing or unknown key
+        "429":
+          description: Rate limited
+  /api/v1/uploads/{kind}:
+    post:
+      summary: Upload audio or image
+      security: [{ bearer: [] }]
+      parameters:
+        - in: path
+          name: kind
+          required: true
+          schema: { type: string, enum: [audio, image] }
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        "200":
+          description: Stored file key
+        "429":
+          description: Upload quota
+  /api/v1/renders:
+    get:
+      summary: List renders for this key mode
+      security: [{ bearer: [] }]
+      parameters:
+        - in: query
+          name: limit
+          schema: { type: integer, minimum: 1, maximum: 50 }
+      responses:
+        "200":
+          description: Render list
+    post:
+      summary: Create a render
+      security: [{ bearer: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateRender"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id: { type: string }
+                  status: { type: string }
+                  creditsCharged: { type: number }
+                  livemode: { type: boolean }
+        "402":
+          description: Not enough credits
+        "429":
+          description: Render or request quota
+  /api/v1/renders/{id}:
+    get:
+      summary: Get render status
+      security: [{ bearer: [] }]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string }
+      responses:
+        "200":
+          description: Render
+        "404":
+          description: Not found for this key mode
+  /api/v1/renders/{id}/output:
+    get:
+      summary: Output URL when completed
+      security: [{ bearer: [] }]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string }
+      responses:
+        "200":
+          description: URL
+        "409":
+          description: Not ready
+  /api/v1/webhooks:
+    get:
+      summary: List webhook endpoints
+      security: [{ bearer: [] }]
+      responses:
+        "200":
+          description: Endpoints, without secrets
+    post:
+      summary: Register an https endpoint
+      security: [{ bearer: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [url]
+              properties:
+                url: { type: string, format: uri }
+                description: { type: string }
+      responses:
+        "201":
+          description: Endpoint plus one-time signing secret
+  /api/v1/webhooks/{id}:
+    delete:
+      summary: Delete an endpoint
+      security: [{ bearer: [] }]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      responses:
+        "200":
+          description: Deleted
+  /api/v1/webhooks/{id}/deliveries:
+    get:
+      summary: Recent delivery attempts
+      security: [{ bearer: [] }]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      responses:
+        "200":
+          description: Delivery log
+  /api/v1/webhooks/{id}/test:
+    post:
+      summary: Send a signed render.test event
+      security: [{ bearer: [] }]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      responses:
+        "200":
+          description: Delivery result
+components:
+  securitySchemes:
+    bearer:
+      type: http
+      scheme: bearer
+  schemas:
+    CreateRender:
+      type: object
+      required: [title]
+      properties:
+        title: { type: string }
+        artist: { type: string }
+        preset: { type: string, description: Visualizer id from GET /api/v1/presets. }
+        format:
+          type: string
+          enum: [landscape, vertical, square, canvas]
+          description: |
+            Output format. Omit it to keep the legacy resolution-only path.
+            On that path resolution is optional. Omitting resolution as well
+            stores 1280x720. A resolution that is sent must match
+            ^[0-9]{3,4}x[0-9]{3,4}$ (each side is 3 or 4 digits, for example
+            1280x720 or 1080x1920). 80x80 and 10000x10000 are rejected.
+            A matching size is kept on a paid render. A free-tier size over
+            1280×720 pixels is clamped by the historical rule (1080x1920
+            becomes 720x1280, and any other over-cap size becomes 1280x720).
+            That clamp is not the landscape preset.
+            landscape is 1280x720, or 1920x1080, 2560x1440, 3840x2160 on a paid render.
+            vertical is 720x1280, or 1080x1920 on a paid render (TikTok, Reels, Shorts).
+            square is 720x720, or 1080x1080 on a paid render (Instagram feed).
+            canvas is Spotify Canvas: 540x960, 3–8 seconds, MP4. Spotify's published
+            Canvas guidelines (https://support.spotify.com/us/artists/article/canvas-guidelines/)
+            say "Between 720px - 1080px tall" — that range is height, not width —
+            plus vertical 9:16, 3–8 seconds, MP4 or JPG. 720x1280 is 1280px tall,
+            so it is the vertical preset, not Canvas. 540x960 is exact 9:16 and
+            960px tall. Free renders stay on the smaller
+            frame of each format. Frame rate stays 20 fps free and 30 fps paid.
+        resolution:
+          type: string
+          example: 1280x720
+          description: |
+            WxH. When format is set, must be one of that format's sizes.
+            Omit it to use that format's default frame.
+            When format is omitted, omit this too to use 1280x720, or send
+            a size whose width and height are each 3 or 4 digits.
+        includeOutro: { type: boolean }
+        audioKey: { type: string }
+        imageKey: { type: string }
+        audioUrl: { type: string, format: uri }
+        imageUrl: { type: string, format: uri }
+

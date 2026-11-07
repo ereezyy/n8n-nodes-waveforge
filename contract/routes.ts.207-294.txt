@@ -1,0 +1,88 @@
+  app.get("/api/v1/presets", async (req, res) => {
+    await withAuth(req, res, deps, async () => {
+      res.json({ presets: listPresets() });
+    });
+  });
+
+  app.post("/api/v1/renders", async (req, res) => {
+    await withAuth(req, res, deps, async principal => {
+      const body = createRenderBodySchema.parse(req.body);
+      const store = storeOf(deps);
+      const created = await performCreateRender({
+        principal,
+        body,
+        req,
+        res,
+        store,
+        lookup: deps.lookup,
+        fetchImpl: deps.fetchImpl,
+        createLikeUi: deps.createLikeUi,
+        schedule: deps.schedule,
+        onTestCompleted: (_job, event) => {
+          void dispatchToUser({
+            store,
+            userId: principal.user.id,
+            event,
+            lookup: deps.lookup,
+            fetchImpl: deps.fetchImpl,
+          });
+        },
+      });
+      res.status(201).json(created);
+    });
+  });
+
+  app.get("/api/v1/renders", async (req, res) => {
+    await withAuth(req, res, deps, async principal => {
+      const limit = Math.min(50, Math.max(1, Number(req.query.limit) || 20));
+      if (!principal.livemode) {
+        res.json({
+          livemode: false,
+          renders: listTestRenders(principal.user.id, limit).map(j => ({
+            id: j.id,
+            status: j.status,
+            progress: j.progress,
+            title: j.title,
+            videoUrl: j.videoUrl,
+            errorMessage: j.errorMessage,
+            createdAt: j.createdAt,
+            livemode: false,
+          })),
+        });
+        return;
+      }
+      const renders = await storeOf(deps).listRenders(principal.user.id, limit);
+      res.json({ livemode: true, renders });
+    });
+  });
+
+  app.get("/api/v1/renders/:id", async (req, res) => {
+    await withAuth(req, res, deps, async principal => {
+      const render = await loadRender(deps, principal, req.params.id);
+      if (!render) {
+        res.status(404).json({ error: { code: "not_found", message: "Render not found" } });
+        return;
+      }
+      res.json(render);
+    });
+  });
+
+  app.get("/api/v1/renders/:id/output", async (req, res) => {
+    await withAuth(req, res, deps, async principal => {
+      const render = await loadRender(deps, principal, req.params.id);
+      if (!render) {
+        res.status(404).json({ error: { code: "not_found", message: "Render not found" } });
+        return;
+      }
+      if (render.status !== "completed" || !render.videoUrl) {
+        res.status(409).json({
+          error: {
+            code: "not_ready",
+            message: `Render is ${render.status}`,
+          },
+        });
+        return;
+      }
+      res.json({ id: render.id, url: render.videoUrl, livemode: render.livemode });
+    });
+  });

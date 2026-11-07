@@ -1,0 +1,18 @@
+}): Promise<{ id: string; status: string; creditsCharged: number; livemode: boolean }> {
+  const paid = isPaidApiTier(opts.principal.user);
+  const now = opts.now ?? Date.now();
+  if (opts.body.audioUrl) await assertPublicHttpUrl(opts.body.audioUrl, "audio", opts.lookup);
+  if (opts.body.imageUrl) await assertPublicHttpUrl(opts.body.imageUrl, "image", opts.lookup);
+  if (!opts.body.audioKey && !opts.body.audioUrl) throw new MediaUrlError("audioKey or audioUrl is required");
+  if (!opts.body.imageKey && !opts.body.imageUrl) throw new MediaUrlError("imageKey or imageUrl is required");
+
+  if (!opts.principal.livemode) {
+    consumeWindow(opts.principal.user.id, "test_renders_per_day", paid, now);
+    const job = createTestRender({
+      userId: opts.principal.user.id,
+      title: opts.body.title,
+      schedule: opts.schedule,
+      onCompleted: opts.onTestCompleted,
+    });
+    return { id: job.id, status: job.status, creditsCharged: 0, livemode: false };
+  }

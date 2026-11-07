@@ -1,0 +1,50 @@
+{
+  "capturedAt": "2026-11-07T12:08:57.234161-06:00",
+  "zone": "America/Chicago (CST)",
+  "files": {
+    "routes.ts.207-294.txt": {
+      "source": "/workspace/integrations/waveforge-zapier/server/publicApi/routes.ts",
+      "lines": [
+        207,
+        294
+      ],
+      "sha256": "0a3ebbe158a67f35d29860afc8cf44f2fd42c4ed4069ca3c6d37e9362238aff6"
+    },
+    "renderCreate.ts.222-239.txt": {
+      "source": "/workspace/integrations/waveforge-zapier/server/publicApi/renderCreate.ts",
+      "lines": [
+        222,
+        239
+      ],
+      "sha256": "1c598d4c47bf58d7cc738cb77abd6eadf9f096a8e36f529f6dd4e1b9a5d942ce"
+    },
+    "testRenders.ts.7-17.txt": {
+      "source": "/workspace/integrations/waveforge-zapier/server/publicApi/testRenders.ts",
+      "lines": [
+        7,
+        17
+      ],
+      "sha256": "a4b326ecb98c05e87e08eadae359695a4cc59e96bab6aa5cb043fbeacbc01630"
+    },
+    "testRenders.ts.33-43.txt": {
+      "source": "/workspace/integrations/waveforge-zapier/server/publicApi/testRenders.ts",
+      "lines": [
+        33,
+        43
+      ],
+      "sha256": "f98a3b34f6c48a192f66aeed27ea6b0efe46158612b9c7bda1e7556f5cdd22aa"
+    },
+    "store.ts.367-378.txt": {
+      "source": "/workspace/integrations/waveforge-zapier/server/publicApi/store.ts",
+      "lines": [
+        367,
+        378
+      ],
+      "sha256": "9f046426fedf3a9d93d94ecc6d46208465b926c6f35cd5b4772165c9d54d623f"
+    },
+    "openapi-2026-11-07.yaml": {
+      "url": "https://waveforge.net/api/v1/openapi.yaml",
+      "sha256": "72220bacad9e6113650ef812729d902d97d6c49f11d12eae45691f0a10867ce2"
+    }
+  }
+}
