@@ -1,0 +1,61 @@
+{
+  "name": "n8n-nodes-waveforge",
+  "version": "0.1.0",
+  "description": "n8n community node for the WaveForge music-video render API",
+  "license": "MIT",
+  "homepage": "https://waveforge.net/developers",
+  "keywords": [
+    "n8n-community-node-package",
+    "waveforge",
+    "music video",
+    "visualizer"
+  ],
+  "author": {
+    "name": "Eddy Woods LLC",
+    "email": "eric@waveforge.net"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ereezyy/n8n-nodes-waveforge.git"
+  },
+  "scripts": {
+    "build": "n8n-node build",
+    "build:watch": "tsc --watch",
+    "dev": "n8n-node dev",
+    "lint": "n8n-node lint",
+    "lint:fix": "n8n-node lint --fix",
+    "test": "vitest run",
+    "release": "n8n-node release",
+    "prepublishOnly": "n8n-node prerelease"
+  },
+  "files": [
+    "dist/credentials",
+    "dist/nodes"
+  ],
+  "n8n": {
+    "n8nNodesApiVersion": 1,
+    "strict": true,
+    "credentials": [
+      "dist/credentials/WaveForgeApi.credentials.js"
+    ],
+    "nodes": [
+      "dist/nodes/WaveForge/WaveForge.node.js",
+      "dist/nodes/WaveForgeTrigger/WaveForgeTrigger.node.js"
+    ]
+  },
+  "devDependencies": {
+    "@n8n/node-cli": "0.55.5",
+    "eslint": "9.32.0",
+    "prettier": "3.6.2",
+    "release-it": "^21.1.0",
+    "typescript": "5.9.2",
+    "vitest": "^3.2.4",
+    "yaml": "2.9.1"
+  },
+  "peerDependencies": {
+    "n8n-workflow": "*"
+  },
+  "bugs": {
+    "url": "https://github.com/ereezyy/n8n-nodes-waveforge/issues"
+  }
+}
