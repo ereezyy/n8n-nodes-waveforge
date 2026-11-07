@@ -1,0 +1,10 @@
+{
+	"node": "n8n-nodes-waveforge.waveForge",
+	"nodeVersion": "1.0",
+	"codexVersion": "1.0",
+	"categories": ["Marketing & Content", "Miscellaneous"],
+	"resources": {
+		"credentialDocumentation": [{ "url": "https://waveforge.net/developers" }],
+		"primaryDocumentation": [{ "url": "https://waveforge.net/developers" }]
+	}
+}
