@@ -1,0 +1,65 @@
+{
+  "_provenance": "Synthetic values in literal response shapes from the pinned source excerpts; not captured live responses. Preset item schema and live render extra fields are UNKNOWN.",
+  "create": {
+    "id": "test_fixture",
+    "status": "pending",
+    "creditsCharged": 0,
+    "livemode": false
+  },
+  "list": {
+    "livemode": false,
+    "renders": [
+      {
+        "id": "test_fixture",
+        "status": "completed",
+        "progress": 100,
+        "title": "Fixture track",
+        "videoUrl": "https://example.com/fixture.mp4",
+        "errorMessage": null,
+        "createdAt": "2026-11-07T18:00:00.000Z",
+        "livemode": false
+      }
+    ]
+  },
+  "get": {
+    "id": "test_fixture",
+    "status": "completed",
+    "progress": 100,
+    "title": "Fixture track",
+    "videoUrl": "https://example.com/fixture.mp4",
+    "errorMessage": null,
+    "createdAt": "2026-11-07T18:00:00.000Z",
+    "livemode": false
+  },
+  "presets": {
+    "presets": []
+  },
+  "output": {
+    "id": "test_fixture",
+    "url": "https://example.com/fixture.mp4",
+    "livemode": false
+  },
+  "notReady": {
+    "error": {
+      "code": "not_ready",
+      "message": "Render is processing"
+    }
+  },
+  "statuses": [
+    "pending",
+    "processing",
+    "completed",
+    "failed"
+  ],
+  "listSemantics": {
+    "limitMin": 1,
+    "limitMax": 50,
+    "defaultLimit": 20,
+    "order": "createdAt descending",
+    "pagination": false
+  },
+  "testMode": {
+    "usesVideos": false,
+    "encodes": false
+  }
+}
