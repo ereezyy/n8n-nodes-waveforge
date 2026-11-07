@@ -1,0 +1,11 @@
+export function listTestRenders(userId: number, limit: number): TestRender[] {
+  return [...jobs.values()]
+    .filter(j => j.userId === userId)
+    .sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1))
+    .slice(0, limit);
+}
+
+/**
+ * Deterministic fake render. Never calls the credit ledger or the encoder.
+ * pending → processing → completed, then a real signed webhook with livemode false.
+ */

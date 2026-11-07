@@ -1,0 +1,12 @@
+  async listRenders(userId: number, limit: number): Promise<PublicRender[]> {
+    const db = await requireDb();
+    const rows = await db
+      .select()
+      .from(videoJobs)
+      .where(and(eq(videoJobs.userId, userId), isNull(videoJobs.expiredAt)))
+      .orderBy(desc(videoJobs.createdAt))
+      .limit(limit);
+    return rows.map(renderFromJob);
+  }
+
+  async setEmbed(userId: number, jobId: number, enabled: boolean): Promise<boolean> {

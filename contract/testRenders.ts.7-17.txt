@@ -1,0 +1,11 @@
+export type TestRender = {
+  id: string;
+  userId: number;
+  title: string;
+  status: "pending" | "processing" | "completed" | "failed";
+  progress: number;
+  videoUrl: string | null;
+  errorMessage: string | null;
+  createdAt: string;
+  livemode: false;
+};
