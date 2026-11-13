@@ -35,7 +35,7 @@ Typical flow: Create → Wait → Get (loop until `completed`) → Get Output, o
 
 ## Compatibility
 
-Built with `@n8n/node-cli` 0.55.5, n8n nodes API v1. No runtime dependencies. Built and offline-tested only against n8n-workflow 2.46.5. The peer declaration remains `*` because n8n's mandatory strict lint requires it; this does not claim compatibility with untested versions. No n8n application version is yet certified: activation, restart persistence, overlapping polls and UI behavior have not been integration-tested. Other workflow versions are unsupported until tested.
+Built with `@n8n/node-cli` 0.55.5, n8n nodes API v1. No runtime dependencies. Built and offline-tested only against n8n-workflow 2.46.5. The peer declaration remains `*` because n8n's mandatory strict lint requires it; this does not claim compatibility with untested versions. `n8n-workflow` is marked as an optional peer so npm 7+ will not auto-install it (or its native `isolated-vm` add-on) when this package is installed outside a host n8n instance. The host n8n installation still provides `n8n-workflow` at runtime. No n8n application version is yet certified: activation, restart persistence, overlapping polls and UI behavior have not been integration-tested. Other workflow versions are unsupported until tested.
 
 ## Development
 
